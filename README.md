@@ -45,18 +45,18 @@ genuy [OPTIONS]
 
 ### Key options
 
-| Option | Default | Description |
-|---|---|---|
-| `-n`, `--num-elements` | `4` | Total number of elements (reflector + driven + directors) |
-| `-f`, `--frequency` | `145.0` MHz | Target centre frequency |
-| `-b`, `--bandwidth` | `10.0` MHz | Bandwidth over which to optimise |
-| `-r`, `--element-radius` | `3.0` mm | Physical radius of all elements |
-| `-z`, `--reference-impedance` | `50+0j` Ω | Reference impedance for VSWR calculation |
-| `--num-generations` | `1000` | Maximum number of GA generations |
-| `--num-solutions` | `100` | Population size |
-| `--percent-mating` | `10.0` | Percentage of population selected as parents |
-| `--save-maa` | *(none)* | Save best solution to an MMANA `.maa` file |
-| `--plot-fitness` | *(off)* | Plot fitness vs. generation after the run |
+| Option                        | Default                    | Description                                               |
+|-------------------------------|----------------------------|-----------------------------------------------------------|
+| `-n`, `--num-elements`        | `4`                        | Total number of elements (reflector + driven + directors) |
+| `-f`, `--frequency`           | `145.0` MHz                | Target centre frequency                                   |
+| `-b`, `--bandwidth`           | `10.0` MHz                 | Bandwidth over which to optimise                          |
+| `-r`, `--element-radius`      | `3.0` mm                   | Physical radius of all elements                           |
+| `-z`, `--reference-impedance` | `50+0j` Ω                  | Reference impedance for VSWR calculation                  |
+| `--num-generations`           | `200`                      | Maximum number of GA generations                          |
+| `--num-solutions`             | `0` (auto: 10 × num genes) | Population size                                           |
+| `--percent-mating`            | `10.0`                     | Percentage of population selected as parents              |
+| `--save-maa`                  | *(none)*                   | Save best solution to an MMANA `.maa` file                |
+| `--plot-fitness`              | *(off)*                    | Plot fitness vs. generation after the run                 |
 
 Run `genuy --help` for the full list of options including element length bounds,
 spacing bounds, mutation rates, VSWR penalty settings, and wire segmentation.
@@ -72,7 +72,7 @@ genuy -n 4 -f 145 -b 10 --save-maa antenna.maa
 Optimize a 6-element antenna, plot convergence, and save:
 
 ```bash
-genuy -n 6 -f 145 -b 10 --num-generations 1000 --num-solutions 150 --save-maa 6el.maa --plot-fitness
+genuy -n 6 -f 145 -b 10 --num-generations 500 --save-maa 6el.maa --plot-fitness
 ```
 
 ## Fitness function
