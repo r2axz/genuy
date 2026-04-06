@@ -87,14 +87,15 @@ def parse_args():
     arg_parser.add_argument(
         "--num-generations",
         type=int,
-        default=1000,
+        default=200,
         help="Maximum number of generations of the genetic algorithm"
     )
     arg_parser.add_argument(
         "--num-solutions",
         type=int,
-        default=100,
-        help="Number of solutions per population"
+        default=0,
+        help="Number of solutions per population, "
+        "if set to 0, it will be set to 10 times the number of genes (2 * num_elements - 1)"
     )
     arg_parser.add_argument(
         "--percent-mating",
@@ -194,6 +195,8 @@ def main():
     if args.num_elements < 2:
         raise ValueError("Number of elements must be at least 2")
     solution_length = 2 * args.num_elements - 1
+    if args.num_solutions == 0:
+        args.num_solutions = solution_length * 10
     elements_space = [
             {"low": args.reflector_length_min, "high": args.reflector_length_max},
             {"low": args.driven_length_min, "high": args.driven_length_max},
