@@ -190,6 +190,10 @@ def fitness_function(ga_instance, solution, solution_idx):
     fb_score = worst_fb * args.fb_weight
     return vswr_score + gain_score + fb_score
 
+def on_generation(ga_instance):
+    print(f"\rGeneration {ga_instance.generations_completed} of {ga_instance.num_generations}: Best Fitness = {ga_instance.best_solution()[1]:.2f}",
+          end="", flush=True)
+
 def main():
     args = parse_args()
     if args.num_elements < 2:
@@ -219,6 +223,7 @@ def main():
         mutation_percent_genes=(args.mutation_percent_max, args.mutation_percent_min),
         parallel_processing=('process', None),
         fitness_func=fitness_function,
+        on_generation=on_generation,
     )
     ga_instance.genuy_args = args
     ga_instance.run()
