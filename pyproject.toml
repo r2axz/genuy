@@ -1,0 +1,24 @@
+[project]
+name = "genuy"
+version = "0.1.0"
+description = "A genetic algorithm optimization based Uda-Yagi antenna generator,"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Kirill Kotyagin", email = "kirill.kotyagin@gmail.com" },
+]
+keywords = ["antenna", "yagi", "uda-yagi"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.14"
+dependencies = [
+    "pymininec>=1.2.0",
+    "pygad>=3.5.0"
+]
+[project.scripts]
+genuy = "genuy.genuy:main"
