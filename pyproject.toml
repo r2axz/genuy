@@ -1,6 +1,6 @@
 [project]
 name = "genuy"
-version = "0.1.1"
+version = "0.1.2"
 description = "A genetic algorithm optimization based Uda-Yagi antenna generator,"
 readme = "README.md"
 license = { text = "MIT" }
