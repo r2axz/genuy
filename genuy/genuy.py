@@ -228,7 +228,7 @@ def main():
     ga_instance.genuy_args = args
     ga_instance.run()
     solution, solution_fitness, solution_idx = ga_instance.best_solution()
-    print("Best solution : ", solution)
+    print("\nBest solution : ", solution)
     print("Best solution fitness : ", solution_fitness)
     print("Best solution index : ", solution_idx)
     uysolution = UYSolution(solution, element_radius=args.element_radius*1e-3)
