@@ -36,6 +36,10 @@ class UYSolution(list):
             accumulate(chain([0], self.spacings))
         )
 
+    @property
+    def boom_length(self):
+        return sum(self.spacings)
+
     def _wavelength(self, frequency):
         return speed_of_light / (frequency * 1e6)
 

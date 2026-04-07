@@ -148,14 +148,20 @@ def parse_args():
     arg_parser.add_argument(
         "--gain-weight",
         type=float,
-        default=1.0,
+        default=3.0,
         help="Weight for gain in the fitness function"
     )
     arg_parser.add_argument(
         "--fb-weight",
         type=float,
-        default=2.0,
+        default=1.0,
         help="Weight for front-to-back ratio in the fitness function"
+    )
+    arg_parser.add_argument(
+        "--boom-length-weight",
+        type=float,
+        default=1.0,
+        help="Weight for boom length in the fitness function"
     )
     arg_parser.add_argument(
         "--reference-impedance",
@@ -197,7 +203,8 @@ def fitness_function(ga_instance, solution, solution_idx):
     vswr_score = (1.0 / worst_vswr) * args.vswr_weight if worst_vswr < args.high_vswr_threshold else args.high_vswr_penalty
     gain_score = worst_gain * args.gain_weight
     fb_score = worst_fb * args.fb_weight
-    return vswr_score + gain_score + fb_score
+    boom_length_score = (1.0 / uysolution.boom_length) * args.boom_length_weight
+    return vswr_score + gain_score + fb_score + boom_length_score
 
 def on_generation(ga_instance):
     print(f"\rGeneration {ga_instance.generations_completed} of {ga_instance.num_generations}: Best Fitness = {ga_instance.best_solution()[1]:.2f}",
