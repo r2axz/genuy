@@ -134,6 +134,12 @@ def parse_args():
         help="Fitness penalty for solutions with high VSWR"
     )
     arg_parser.add_argument(
+        "--vswr-punish-early",
+        action="store_true",
+        default=False,
+        help="Punish high VSWR early in the fitness evaluation"
+    )
+    arg_parser.add_argument(
         "--vswr-weight",
         type=float,
         default=100.0,
@@ -179,7 +185,10 @@ def fitness_function(ga_instance, solution, solution_idx):
     fbs = list()
     for f in [args.frequency - args.bandwidth/2, args.frequency, args.frequency + args.bandwidth/2]:
         uysolution.simulate(f, nseg=args.num_segments)
-        vswrs.append(uysolution.vswr(reference_impedance=args.reference_impedance))
+        vswr = uysolution.vswr(reference_impedance=args.reference_impedance)
+        if args.vswr_punish_early and vswr >= args.high_vswr_threshold:
+            return args.high_vswr_penalty
+        vswrs.append(vswr)
         gains.append(uysolution.gain)
         fbs.append(uysolution.fb)
     worst_vswr = max(vswrs)
