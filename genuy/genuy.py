@@ -1,5 +1,6 @@
 from warnings import catch_warnings, filterwarnings
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+import random
 
 from pygad import GA
 
@@ -171,6 +172,12 @@ def parse_args():
         help="Reference impedance for VSWR calculation"
     )
     arg_parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Random seed for reproducibility. If not set, a random seed is chosen and printed."
+    )
+    arg_parser.add_argument(
         "--save-maa",
         type=str,
         default=None,
@@ -179,7 +186,7 @@ def parse_args():
     arg_parser.add_argument(
         "--plot-fitness",
         action="store_true",
-        help="Plot fitness over generations"
+        help="Plot fitness vs. generation after the run"
     )
     return arg_parser.parse_args()
 
@@ -212,6 +219,8 @@ def on_generation(ga_instance):
 
 def main():
     args = parse_args()
+    random_seed = args.seed if args.seed is not None else random.randint(0, 2**32 - 1)
+    print(f"Random seed: {random_seed}")
     if args.num_elements < 2:
         raise ValueError("Number of elements must be at least 2")
     solution_length = 2 * args.num_elements - 1
@@ -233,13 +242,14 @@ def main():
         num_generations=args.num_generations,
         parent_selection_type="tournament",
         K_tournament=2,
-        keep_parents=2,
+        keep_elitism=2,
         crossover_type="single_point",
         mutation_type="adaptive",
         mutation_percent_genes=(args.mutation_percent_max, args.mutation_percent_min),
         parallel_processing=('process', None),
         fitness_func=fitness_function,
         on_generation=on_generation,
+        random_seed=random_seed
     )
     ga_instance.genuy_args = args
     ga_instance.run()
