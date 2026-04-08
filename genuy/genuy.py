@@ -86,6 +86,22 @@ def parse_args():
         help="Maximum spacing between elements in terms of wavelength"
     )
     arg_parser.add_argument(
+        "--constrain-length",
+        nargs=3,
+        action="append",
+        metavar=("element", "min_length", "max_length"),
+        help="Constrain length of specific elements, format: --constrain-length <element> <min_length> <max_length>",
+        default=[]
+    )
+    arg_parser.add_argument(
+        "--constrain-spacing",
+        nargs=3,
+        action="append",
+        metavar=("element", "min_spacing", "max_spacing"),
+        help="Constrain spacing between specific elements, format: --constrain-spacing <element> <min_spacing> <max_spacing>",
+        default=[]
+    )
+    arg_parser.add_argument(
         "--num-generations",
         type=int,
         default=200,
@@ -223,14 +239,41 @@ def main():
     print(f"Random seed: {random_seed}")
     if args.num_elements < 2:
         raise ValueError("Number of elements must be at least 2")
+    print(f"Optimizing a Uda-Yagi antenna with {args.num_elements} elements...")
+    print(f"Target frequency: {args.frequency} MHz")
+    print(f"Bandwidth: {args.bandwidth} MHz")
     solution_length = 2 * args.num_elements - 1
     if args.num_solutions == 0:
         args.num_solutions = solution_length * 10
+    keep_elitism = int(round(args.num_solutions / 20))
+    crossover_type = "two_points" if solution_length > 5 else "single_point"
     elements_space = [
             {"low": args.reflector_length_min, "high": args.reflector_length_max},
             {"low": args.driven_length_min, "high": args.driven_length_max},
         ] + [{"low": args.director_length_min, "high": args.director_length_max}] * (args.num_elements - 2)
+    for element, min_length, max_length in args.constrain_length:
+        try:
+            idx = int(element) - 1
+            if idx < 0 or idx >= args.num_elements:
+                raise ValueError()
+        except ValueError:
+            raise ValueError(f"Invalid element index in --constrain-length: {element}")
+        elements_space[idx] = {"low": float(min_length), "high": float(max_length)}
+    print("Element length constraints:")
+    for i, element in enumerate(elements_space):
+        print(f"  Element {i + 1}: {element['low']} - {element['high']}")
     spacings_space = [{"low": args.spacing_min, "high": args.spacing_max}] * (args.num_elements - 1)
+    for element, min_spacing, max_spacing in args.constrain_spacing:
+        try:
+            idx = int(element) - 1
+            if idx < 0 or idx >= args.num_elements - 1:
+                raise ValueError()
+        except ValueError:
+            raise ValueError(f"Invalid element index in --constrain-spacing: {element}")
+        spacings_space[idx] = {"low": float(min_spacing), "high": float(max_spacing)}
+    print("Spacing constraints:")
+    for i, spacing in enumerate(spacings_space):
+        print(f"  Spacing {i+1} (element {i} to {i+1}): {spacing['low']} - {spacing['high']}")
     gene_space = [None] * solution_length
     gene_space[::2] = elements_space
     gene_space[1::2] = spacings_space
@@ -242,8 +285,8 @@ def main():
         num_generations=args.num_generations,
         parent_selection_type="tournament",
         K_tournament=2,
-        keep_elitism=2,
-        crossover_type="single_point",
+        keep_elitism=keep_elitism if keep_elitism else 1,
+        crossover_type=crossover_type,
         mutation_type="adaptive",
         mutation_percent_genes=(args.mutation_percent_max, args.mutation_percent_min),
         parallel_processing=('process', None),
