@@ -177,7 +177,7 @@ def parse_args():
     arg_parser.add_argument(
         "--boom-length-weight",
         type=float,
-        default=1.0,
+        default=0.0,
         help="Weight for boom length in the fitness function"
     )
     arg_parser.add_argument(
