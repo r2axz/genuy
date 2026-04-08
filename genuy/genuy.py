@@ -117,13 +117,13 @@ def parse_args():
     arg_parser.add_argument(
         "--percent-mating",
         type=float,
-        default=10.0,
+        default=30.0,
         help="Percent of mating solutions in the population"
     )
     arg_parser.add_argument(
         "--mutation-percent-max",
         type=float,
-        default=40.0,
+        default=50.0,
         help="Max mutation percent of genes for adaptive mutation"
     )
     arg_parser.add_argument(
